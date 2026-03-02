@@ -28,13 +28,13 @@ const HomePage = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-[#2a120f]/85 via-[#6f2a22]/65 to-[#b67600]/35" />
         <div className="absolute -right-16 -top-16 h-52 w-52 rounded-full border border-white/20" />
         <div className="absolute -bottom-24 left-1/3 h-72 w-72 rounded-full border border-white/10" />
-        <div className="relative px-8 py-16 md:px-12 md:py-20">
-          <p className="mb-2 text-xs uppercase tracking-[0.22em] text-amber-100">Nanbell Couture Platform</p>
-          <h1 className="max-w-3xl text-4xl leading-tight md:text-5xl">Elegant Design Showcase and Seamless Ready-Made Shopping</h1>
-          <p className="mt-4 max-w-2xl text-sm text-amber-100 md:text-base">
+        <div className="hero-content relative px-8 py-16 md:px-12 md:py-20">
+          <p className="reveal-up mb-2 text-xs uppercase tracking-[0.22em] text-amber-100">Nanbell Couture Platform</p>
+          <h1 className="reveal-up delay-1 max-w-3xl text-4xl leading-tight md:text-5xl">Elegant Design Showcase and Seamless Ready-Made Shopping</h1>
+          <p className="reveal-up delay-2 mt-4 max-w-2xl text-sm text-amber-100 md:text-base">
             Discover design inspirations, buy ready-made outfits online, and track each order from creation to pickup.
           </p>
-          <div className="mt-6 flex flex-wrap gap-3">
+          <div className="reveal-up delay-3 mt-6 flex flex-wrap gap-3">
             <Link to="/shop" className="rounded-xl bg-white px-5 py-2 font-semibold text-[#b8322f]">Explore Shop</Link>
             <Link to="/templates" className="rounded-xl border border-white/60 bg-black/20 px-5 py-2 font-semibold text-white">View Designs</Link>
           </div>
