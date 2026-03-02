@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import api from "../../api/client";
 import { useToast } from "../../context/ToastContext";
 import { resolveImageUrl } from "../../utils/image";
+import OrderTimeline from "../../components/OrderTimeline";
 
 const STATUS_OPTIONS = ["Not Started", "In Progress", "Almost Done", "Ready for Pickup"];
 
@@ -109,13 +110,14 @@ const AdminOrdersPage = () => {
               <p className="text-sm text-slate-600">Due: {new Date(order.expectedCompletionDate).toLocaleDateString()}</p>
             </div>
             <p className="mb-2 text-xs text-slate-500">Type: {order.orderType === "shop" ? "Shop Order" : "Custom Sewing"} | Size: {order.size || "-"} | Qty: {order.quantity || 1}</p>
+            <OrderTimeline status={order.status} transactionCompleted={!!order.transactionCompleted} />
 
             {compact ? (
               <p className="text-sm text-slate-600">Completed on: {order.completedAt ? new Date(order.completedAt).toLocaleDateString() : "-"}</p>
             ) : (
-              <div className="flex flex-wrap items-center gap-2 text-sm">
+              <div className="mt-3 grid gap-2 text-sm md:flex md:flex-wrap md:items-center">
                 <select
-                  className="field max-w-xs"
+                  className="field w-full md:max-w-xs"
                   value={order.status}
                   onChange={(e) => {
                     const nextStatus = e.target.value;
@@ -126,14 +128,14 @@ const AdminOrdersPage = () => {
                 </select>
                 <input
                   type="date"
-                  className="field max-w-xs"
+                  className="field w-full md:max-w-xs"
                   value={new Date(order.expectedCompletionDate).toISOString().slice(0, 10)}
                   onChange={(e) => {
                     const nextDate = e.target.value;
                     setOrders((prev) => prev.map((o) => (o._id === order._id ? { ...o, expectedCompletionDate: nextDate } : o)));
                   }}
                 />
-                <label className="field flex max-w-xs items-center gap-2">
+                <label className="field flex w-full items-center gap-2 md:max-w-xs">
                   <input
                     type="checkbox"
                     checked={!!order.showEstimatedDate}
@@ -163,12 +165,15 @@ const AdminOrdersPage = () => {
         <p className="text-slate-600">Ready for pickup is tracked separately from transaction completed.</p>
       </div>
 
-      <form onSubmit={createCustomOrder} className="panel grid gap-3 p-4 md:grid-cols-2">
-        <h2 className="md:col-span-2 text-xl font-semibold">Create Custom Sewing Order</h2>
-
+      <details className="panel group p-4" open>
+        <summary className="cursor-pointer list-none text-xl font-semibold">
+          Create Custom Sewing Order
+          <span className="ml-2 text-sm font-medium text-slate-500 group-open:hidden">(tap to open)</span>
+        </summary>
+      <form onSubmit={createCustomOrder} className="mt-3 grid gap-3 md:grid-cols-2">
         <div className="md:col-span-2 space-y-2">
           <input className="field" placeholder="Search customer by name/phone" value={customerSearch} onChange={(e) => setCustomerSearch(e.target.value)} />
-          <div className="flex gap-2">
+          <div className="grid gap-2 md:flex">
             <button type="button" onClick={() => searchCustomers(customerSearch)} className="btn-ghost">Search Customer</button>
             <select value={form.customer} onChange={(e) => setForm((p) => ({ ...p, customer: e.target.value }))} className="field" required>
               <option value="">Select customer from results</option>
@@ -189,15 +194,16 @@ const AdminOrdersPage = () => {
 
         <button className="btn-primary md:col-span-2">Create Custom Order</button>
       </form>
+      </details>
 
-      <div className="panel flex items-center gap-2 p-3">
+      <div className="panel sticky top-20 z-10 flex flex-col gap-2 p-3 md:flex-row md:items-center">
         <label className="text-sm font-semibold">Filter by status:</label>
-        <select className="field max-w-xs" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+        <select className="field w-full md:max-w-xs" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
           <option>All</option>
           {STATUS_OPTIONS.map((s) => <option key={s}>{s}</option>)}
         </select>
         <label className="text-sm font-semibold">Type:</label>
-        <select className="field max-w-xs" value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
+        <select className="field w-full md:max-w-xs" value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
           <option value="All">All</option>
           <option value="custom">Custom</option>
           <option value="shop">Shop</option>
