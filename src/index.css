@@ -120,3 +120,31 @@ h4 {
   background: #fff0ef;
   color: #b8322f;
 }
+
+@keyframes fadeSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-content .reveal-up {
+  opacity: 0;
+  animation: fadeSlideUp 700ms ease forwards;
+}
+
+.hero-content .delay-1 {
+  animation-delay: 120ms;
+}
+
+.hero-content .delay-2 {
+  animation-delay: 240ms;
+}
+
+.hero-content .delay-3 {
+  animation-delay: 360ms;
+}
