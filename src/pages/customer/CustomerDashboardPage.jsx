@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../../api/client";
 import { resolveImageUrl } from "../../utils/image";
+import OrderTimeline from "../../components/OrderTimeline";
 
 const statusColors = {
   "Not Started": "border-slate-200 bg-slate-100 text-slate-700",
@@ -67,6 +68,7 @@ const CustomerDashboardPage = () => {
                     <p>Quantity: <span className="font-semibold text-slate-800">{order.quantity || 1}</span></p>
                     <p>Size: <span className="font-semibold text-slate-800">{order.size || "-"}</span></p>
                   </div>
+                  <OrderTimeline status={order.status} transactionCompleted={!!order.transactionCompleted} />
                   {order.showEstimatedDate ? (
                     <p className="mt-2 text-sm text-slate-600">Expected completion: {new Date(order.expectedCompletionDate).toLocaleDateString()}</p>
                   ) : (
