@@ -1,0 +1,122 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --peach-1: #fff2e8;
+  --peach-2: #f9dfcf;
+  --gold-1: #f2c35f;
+  --emerald-1: #0f8b6e;
+  --red-1: #b8322f;
+  --ink: #251713;
+}
+
+* {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Manrope", sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(1000px 380px at 100% -5%, rgba(242, 195, 95, 0.35) 0%, rgba(242, 195, 95, 0) 75%),
+    radial-gradient(900px 360px at -10% 10%, rgba(249, 223, 207, 0.7) 0%, rgba(249, 223, 207, 0) 72%),
+    linear-gradient(180deg, var(--peach-1) 0%, #fffaf6 100%);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: "Playfair Display", serif;
+  letter-spacing: -0.01em;
+}
+
+@layer components {
+  .panel {
+    @apply rounded-2xl border border-[#f1d9ca] bg-white/90 shadow-sm backdrop-blur;
+  }
+
+  .hero-panel {
+    @apply rounded-3xl border border-white/50 shadow-xl;
+    background: linear-gradient(135deg, #d17353 0%, #b8322f 42%, #f2c35f 100%);
+  }
+
+  .btn-primary {
+    @apply rounded-xl px-4 py-2 font-semibold text-white transition duration-200 hover:-translate-y-0.5;
+    background: linear-gradient(135deg, #b8322f 0%, #da4f41 100%);
+  }
+
+  .btn-primary:hover {
+    background: linear-gradient(135deg, #a42927 0%, #c63f35 100%);
+  }
+
+  .btn-ghost {
+    @apply rounded-xl border border-[#e9cdb9] bg-white px-4 py-2 font-semibold text-slate-700 transition hover:-translate-y-0.5 hover:bg-[#fff4eb];
+  }
+
+  .field {
+    @apply w-full rounded-xl border border-[#e8c9b4] bg-white px-3 py-2.5 text-sm outline-none transition;
+  }
+
+  .field:focus {
+    border-color: #b8322f;
+    box-shadow: 0 0 0 2px rgba(184, 50, 47, 0.15);
+  }
+
+  .badge {
+    @apply inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold;
+  }
+
+  .soft-link {
+    @apply text-sm font-semibold transition;
+    color: var(--red-1);
+  }
+
+  .soft-link:hover {
+    color: #912725;
+  }
+
+  .card-hover {
+    @apply transition duration-200 hover:-translate-y-1 hover:shadow-lg;
+  }
+
+  .skeleton {
+    @apply animate-pulse rounded-xl bg-[#f6e6da];
+  }
+}
+
+.toast-wrap {
+  position: fixed;
+  right: 16px;
+  top: 84px;
+  z-index: 60;
+  display: flex;
+  max-width: 360px;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.toast {
+  border-radius: 12px;
+  border: 1px solid #e7d2c2;
+  background: #fff8f2;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 8px 20px rgba(37, 23, 19, 0.1);
+}
+
+.toast-success {
+  border-color: #bde8d9;
+  background: #eaf9f3;
+  color: #0f8b6e;
+}
+
+.toast-error {
+  border-color: #f3c3c0;
+  background: #fff0ef;
+  color: #b8322f;
+}
