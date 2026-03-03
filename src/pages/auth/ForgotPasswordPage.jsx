@@ -6,16 +6,20 @@ const ForgotPasswordPage = () => {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const onSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setMessage("");
+    setSubmitting(true);
     try {
       const { data } = await api.post("/auth/forgot-password", { email });
       setMessage(data.message || "If the account exists, a reset link has been sent.");
     } catch (err) {
       setError(err.response?.data?.message || "Failed to send reset link");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -30,7 +34,9 @@ const ForgotPasswordPage = () => {
           <input className="field" type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
           {message && <p className="rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-700">{message}</p>}
           {error && <p className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">{error}</p>}
-          <button className="btn-primary w-full">Send Reset Link</button>
+          <button disabled={submitting} className={`btn-primary w-full ${submitting ? "cursor-not-allowed opacity-80" : ""}`}>
+            {submitting ? "Sending..." : "Send Reset Link"}
+          </button>
           <p className="text-center text-sm text-slate-600">
             Back to{" "}
             <Link to="/login" className="font-semibold text-[#b8322f] hover:underline">
