@@ -8,16 +8,21 @@ const RegisterPage = () => {
   const [form, setForm] = useState({ fullName: "", phone: "", email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const onChange = (e) => setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    setSubmitting(true);
     try {
       await register(form);
       navigate("/customer/dashboard");
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -39,7 +44,9 @@ const RegisterPage = () => {
             </button>
           </div>
           {error && <p className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">{error}</p>}
-          <button className="btn-primary w-full">Register</button>
+          <button disabled={submitting} className={`btn-primary w-full ${submitting ? "cursor-not-allowed opacity-80" : ""}`}>
+            {submitting ? "Creating account..." : "Register"}
+          </button>
           <p className="text-center text-sm text-slate-600">
             Already have an account?{" "}
             <Link to="/login" className="font-semibold text-[#b8322f] hover:underline">
