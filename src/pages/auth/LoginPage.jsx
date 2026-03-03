@@ -9,14 +9,19 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    setSubmitting(true);
     try {
       await login(emailOrPhone, password);
       navigate("/");
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -36,7 +41,9 @@ const LoginPage = () => {
             </button>
           </div>
           {error && <p className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">{error}</p>}
-          <button className="btn-primary w-full">Sign In</button>
+          <button disabled={submitting} className={`btn-primary w-full ${submitting ? "cursor-not-allowed opacity-80" : ""}`}>
+            {submitting ? "Signing you in..." : "Sign In"}
+          </button>
           <div className="space-y-1 text-center text-sm text-slate-600">
             <p>
               Don't have an account?{" "}
