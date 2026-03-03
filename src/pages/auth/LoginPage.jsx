@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 const LoginPage = () => {
@@ -37,6 +37,20 @@ const LoginPage = () => {
           </div>
           {error && <p className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">{error}</p>}
           <button className="btn-primary w-full">Sign In</button>
+          <div className="space-y-1 text-center text-sm text-slate-600">
+            <p>
+              Don't have an account?{" "}
+              <Link to="/register" className="font-semibold text-[#b8322f] hover:underline">
+                Sign up here
+              </Link>
+            </p>
+            <p>
+              Forgot your password?{" "}
+              <Link to="/forgot-password" className="font-semibold text-[#0f8b6e] hover:underline">
+                Reset it
+              </Link>
+            </p>
+          </div>
         </form>
       </div>
     </div>
