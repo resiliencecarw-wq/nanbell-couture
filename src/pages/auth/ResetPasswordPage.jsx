@@ -9,12 +9,15 @@ const ResetPasswordPage = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const onSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setSubmitting(true);
     if (password !== confirmPassword) {
       setError("Passwords do not match");
+      setSubmitting(false);
       return;
     }
 
@@ -23,6 +26,8 @@ const ResetPasswordPage = () => {
       navigate("/login");
     } catch (err) {
       setError(err.response?.data?.message || "Failed to reset password");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -42,7 +47,9 @@ const ResetPasswordPage = () => {
           </div>
           <input className="field" type={showPassword ? "text" : "password"} placeholder="Confirm new password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
           {error && <p className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">{error}</p>}
-          <button className="btn-primary w-full">Reset Password</button>
+          <button disabled={submitting} className={`btn-primary w-full ${submitting ? "cursor-not-allowed opacity-80" : ""}`}>
+            {submitting ? "Resetting..." : "Reset Password"}
+          </button>
           <p className="text-center text-sm text-slate-600">
             Back to{" "}
             <Link to="/login" className="font-semibold text-[#b8322f] hover:underline">
