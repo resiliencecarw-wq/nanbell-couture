@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
@@ -9,6 +10,7 @@ const defaultOrder = { size: "", quantity: 1, notes: "" };
 const ShopPage = () => {
   const { user } = useAuth();
   const { showToast } = useToast();
+  const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [openOrderId, setOpenOrderId] = useState("");
@@ -20,7 +22,28 @@ const ShopPage = () => {
       .finally(() => setLoading(false));
   }, []);
 
+  const onOrderClick = (shopItemId) => {
+    if (!user) {
+      showToast("Please login to place your order.");
+      navigate("/login");
+      return;
+    }
+
+    setOpenOrderId((prev) => (prev === shopItemId ? "" : shopItemId));
+  };
+
   const placeOrder = async (shopItemId) => {
+    if (!user) {
+      showToast("Please login to place your order.");
+      navigate("/login");
+      return;
+    }
+
+    if (user.role !== "customer") {
+      showToast("Only customer accounts can place shop orders.", "error");
+      return;
+    }
+
     const quantity = Number(orderForm.quantity) || 0;
     if (quantity < 1) {
       showToast("Quantity must be at least 1.", "error");
@@ -77,21 +100,17 @@ const ShopPage = () => {
               </div>
               <p className="text-sm text-slate-600">{item.description}</p>
 
-              {user?.role === "customer" ? (
                 <div className="space-y-3 pt-2">
-                  <button onClick={() => setOpenOrderId((prev) => (prev === item._id ? "" : item._id))} className="btn-primary w-full">Order This Item</button>
-                  {openOrderId === item._id && (
-                    <div className="space-y-2 rounded-xl border border-amber-200 bg-amber-50/70 p-3">
-                      <input className="field" placeholder="Size (e.g. M, L)" value={orderForm.size} onChange={(e) => setOrderForm((p) => ({ ...p, size: e.target.value }))} />
-                      <input className="field" type="number" min="1" value={orderForm.quantity} onChange={(e) => setOrderForm((p) => ({ ...p, quantity: e.target.value }))} />
-                      <textarea className="field" placeholder="Extra note (optional)" value={orderForm.notes} onChange={(e) => setOrderForm((p) => ({ ...p, notes: e.target.value }))} />
-                      <button onClick={() => placeOrder(item._id)} className="btn-primary w-full">Confirm Order</button>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <p className="rounded-lg bg-slate-100 px-3 py-2 text-xs text-slate-600">Login as customer to place a shop order.</p>
-              )}
+                <button onClick={() => onOrderClick(item._id)} className="btn-primary w-full">Order This Item</button>
+                {openOrderId === item._id && (
+                  <div className="space-y-2 rounded-xl border border-amber-200 bg-amber-50/70 p-3">
+                    <input className="field" placeholder="Size (e.g. M, L)" value={orderForm.size} onChange={(e) => setOrderForm((p) => ({ ...p, size: e.target.value }))} />
+                    <input className="field" type="number" min="1" value={orderForm.quantity} onChange={(e) => setOrderForm((p) => ({ ...p, quantity: e.target.value }))} />
+                    <textarea className="field" placeholder="Extra note (optional)" value={orderForm.notes} onChange={(e) => setOrderForm((p) => ({ ...p, notes: e.target.value }))} />
+                    <button onClick={() => placeOrder(item._id)} className="btn-primary w-full">Confirm Order</button>
+                  </div>
+                )}
+              </div>
             </div>
           </article>
         ))}
