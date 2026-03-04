@@ -3,11 +3,17 @@ import api from "../api/client";
 import { resolveImageUrl } from "../utils/image";
 
 const AboutPage = () => {
-  const [siteContent, setSiteContent] = useState({ founderName: "", founderBio: "", founderImageUrl: "" });
+  const [siteContent, setSiteContent] = useState({ founderName: "", founderBio: "", founderImageUrls: [] });
 
   useEffect(() => {
     api.get("/site-content")
-      .then(({ data }) => setSiteContent(data))
+      .then(({ data }) =>
+        setSiteContent({
+          founderName: data.founderName || "",
+          founderBio: data.founderBio || "",
+          founderImageUrls: Array.isArray(data.founderImageUrls) ? data.founderImageUrls : []
+        })
+      )
       .catch(() => {});
   }, []);
 
@@ -45,16 +51,21 @@ const AboutPage = () => {
             {siteContent.founderBio || "Meet the founder shaping every design with passion, precision, and timeless style."}
           </p>
         </div>
-        <div className="h-full min-h-64 bg-[#f8e5d9]">
-          {siteContent.founderImageUrl ? (
-            <img
-              src={resolveImageUrl(siteContent.founderImageUrl)}
-              alt="Founder of Nanbell Couture"
-              className="h-full w-full object-cover"
-            />
+        <div className="h-full min-h-64 bg-[#f8e5d9] p-4">
+          {siteContent.founderImageUrls.length > 0 ? (
+            <div className="grid h-full min-h-64 gap-2 sm:grid-cols-2">
+              {siteContent.founderImageUrls.map((url) => (
+                <img
+                  key={url}
+                  src={resolveImageUrl(url)}
+                  alt="Founder of Nanbell Couture"
+                  className="h-full min-h-32 w-full rounded-xl object-cover"
+                />
+              ))}
+            </div>
           ) : (
             <div className="grid h-full min-h-64 place-content-center px-6 text-center text-sm text-slate-500">
-              Founder image will appear here after admin upload.
+              Founder images will appear here after admin upload.
             </div>
           )}
         </div>
