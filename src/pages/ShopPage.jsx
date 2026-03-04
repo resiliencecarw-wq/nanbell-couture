@@ -4,7 +4,39 @@ import api from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 import { resolveImageUrl } from "../utils/image";
-import { addItemToCart, getCart } from "../utils/cart";
+
+const CART_KEY = "nanbell_cart";
+
+const getCart = () => {
+  try {
+    const raw = localStorage.getItem(CART_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (_e) {
+    return [];
+  }
+};
+
+const saveCart = (items) => {
+  localStorage.setItem(CART_KEY, JSON.stringify(items));
+};
+
+const addItemToCart = (item) => {
+  const cart = getCart();
+  const existing = cart.find((entry) => entry.shopItemId === item.shopItemId && entry.size === item.size && entry.notes === item.notes);
+  if (existing) {
+    existing.quantity += Number(item.quantity) || 1;
+    saveCart(cart);
+    return;
+  }
+  saveCart([
+    ...cart,
+    {
+      cartId: `${item.shopItemId}-${Date.now()}-${Math.floor(Math.random() * 10000)}`,
+      ...item
+    }
+  ]);
+};
 
 const ShopPage = () => {
   const { user } = useAuth();
