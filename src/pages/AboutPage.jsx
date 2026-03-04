@@ -1,4 +1,16 @@
+import { useEffect, useState } from "react";
+import api from "../api/client";
+import { resolveImageUrl } from "../utils/image";
+
 const AboutPage = () => {
+  const [siteContent, setSiteContent] = useState({ founderName: "", founderBio: "", founderImageUrl: "" });
+
+  useEffect(() => {
+    api.get("/site-content")
+      .then(({ data }) => setSiteContent(data))
+      .catch(() => {});
+  }, []);
+
   return (
     <div className="space-y-6">
       <section className="panel p-6">
@@ -22,6 +34,30 @@ const AboutPage = () => {
           <h2 className="text-xl font-semibold">Our Style</h2>
           <p className="mt-2 text-sm text-slate-600">Elegant, bold, and modern designs tailored for every occasion.</p>
         </article>
+      </section>
+
+      <section className="panel overflow-hidden md:grid md:grid-cols-[1.1fr_1fr]">
+        <div className="p-6">
+          <h2 className="text-2xl font-bold text-[#b8322f]">
+            {siteContent.founderName || "Face Behind Nanbell Couture"}
+          </h2>
+          <p className="mt-3 text-sm leading-6 text-slate-600">
+            {siteContent.founderBio || "Meet the founder shaping every design with passion, precision, and timeless style."}
+          </p>
+        </div>
+        <div className="h-full min-h-64 bg-[#f8e5d9]">
+          {siteContent.founderImageUrl ? (
+            <img
+              src={resolveImageUrl(siteContent.founderImageUrl)}
+              alt="Founder of Nanbell Couture"
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <div className="grid h-full min-h-64 place-content-center px-6 text-center text-sm text-slate-500">
+              Founder image will appear here after admin upload.
+            </div>
+          )}
+        </div>
       </section>
     </div>
   );
