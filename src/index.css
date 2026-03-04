@@ -86,6 +86,12 @@ h4 {
   .skeleton {
     @apply animate-pulse rounded-xl bg-[#f6e6da];
   }
+
+  .img-fit {
+    object-fit: fill !important;
+    object-position: center;
+    background: #f8f3ee;
+  }
 }
 
 .toast-wrap {
