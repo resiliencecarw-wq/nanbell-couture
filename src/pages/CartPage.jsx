@@ -4,7 +4,39 @@ import api from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 import { resolveImageUrl } from "../utils/image";
-import { clearCart, getCart, removeCartItem, updateCartItem } from "../utils/cart";
+
+const CART_KEY = "nanbell_cart";
+
+const getCart = () => {
+  try {
+    const raw = localStorage.getItem(CART_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (_e) {
+    return [];
+  }
+};
+
+const saveCart = (items) => {
+  localStorage.setItem(CART_KEY, JSON.stringify(items));
+};
+
+const updateCartItem = (cartId, updates) => {
+  const next = getCart().map((entry) => (entry.cartId === cartId ? { ...entry, ...updates } : entry));
+  saveCart(next);
+  return next;
+};
+
+const removeCartItem = (cartId) => {
+  const next = getCart().filter((entry) => entry.cartId !== cartId);
+  saveCart(next);
+  return next;
+};
+
+const clearCart = () => {
+  saveCart([]);
+  return [];
+};
 
 const CartPage = () => {
   const { user } = useAuth();
@@ -88,7 +120,7 @@ const CartPage = () => {
         {cart.map((entry) => (
           <article key={entry.cartId} className="panel p-4">
             <div className="flex flex-col gap-3 md:flex-row">
-              <img src={resolveImageUrl(entry.imageUrl)} alt={entry.itemName} className="h-28 w-full rounded-xl object-cover md:w-36" />
+              <img src={resolveImageUrl(entry.imageUrl)} alt={entry.itemName} className="h-28 w-full rounded-xl bg-[#f8f3ee] object-contain md:w-36" />
               <div className="flex-1 space-y-2">
                 <p className="text-lg font-semibold">{entry.itemName}</p>
                 <div className="grid gap-2 md:grid-cols-3">
