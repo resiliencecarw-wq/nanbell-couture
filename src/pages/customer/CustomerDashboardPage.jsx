@@ -73,7 +73,7 @@ const CustomerDashboardPage = () => {
                 <img
                   src={orderImage ? resolveImageUrl(orderImage) : "https://via.placeholder.com/160x130?text=No+Image"}
                   alt={orderName || "Order"}
-                  className="h-32 w-full rounded-xl object-cover md:w-40"
+                  className="h-32 w-full rounded-xl bg-[#f8f3ee] object-contain md:w-40"
                 />
                 <div className="flex-1">
                   <div className="flex flex-wrap items-center justify-between gap-3">
