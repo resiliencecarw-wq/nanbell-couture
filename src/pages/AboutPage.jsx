@@ -2,6 +2,13 @@ import { useEffect, useState } from "react";
 import api from "../api/client";
 import { resolveImageUrl } from "../utils/image";
 
+const readFounderImages = (data) => {
+  const list = Array.isArray(data?.founderImageUrls) ? data.founderImageUrls : [];
+  if (list.length > 0) return list;
+  if (data?.founderImageUrl) return [data.founderImageUrl];
+  return [];
+};
+
 const AboutPage = () => {
   const [siteContent, setSiteContent] = useState({ founderName: "", founderBio: "", founderImageUrls: [] });
 
@@ -11,7 +18,7 @@ const AboutPage = () => {
         setSiteContent({
           founderName: data.founderName || "",
           founderBio: data.founderBio || "",
-          founderImageUrls: Array.isArray(data.founderImageUrls) ? data.founderImageUrls : []
+          founderImageUrls: readFounderImages(data)
         })
       )
       .catch(() => {});
