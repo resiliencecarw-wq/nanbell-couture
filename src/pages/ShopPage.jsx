@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 import { resolveImageUrl } from "../utils/image";
 
-const defaultOrder = { size: "", quantity: 1, notes: "" };
+const defaultItemForm = { size: "", quantity: 1, notes: "" };
 
 const ShopPage = () => {
   const { user } = useAuth();
@@ -13,8 +13,9 @@ const ShopPage = () => {
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [openOrderId, setOpenOrderId] = useState("");
-  const [orderForm, setOrderForm] = useState(defaultOrder);
+  const [itemForms, setItemForms] = useState({});
+  const [cart, setCart] = useState([]);
+  const [checkingOut, setCheckingOut] = useState(false);
 
   useEffect(() => {
     api.get("/shop-items")
@@ -22,54 +23,126 @@ const ShopPage = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  const onOrderClick = (shopItemId) => {
-    if (!user) {
-      showToast("Please login to place your order.");
-      navigate("/login");
-      return;
-    }
-
-    setOpenOrderId((prev) => (prev === shopItemId ? "" : shopItemId));
+  const setItemFormValue = (shopItemId, key, value) => {
+    setItemForms((prev) => ({
+      ...prev,
+      [shopItemId]: { ...(prev[shopItemId] || defaultItemForm), [key]: value }
+    }));
   };
 
-  const placeOrder = async (shopItemId) => {
-    if (!user) {
-      showToast("Please login to place your order.");
-      navigate("/login");
-      return;
-    }
+  const getItemForm = (shopItemId) => itemForms[shopItemId] || defaultItemForm;
 
-    if (user.role !== "customer") {
-      showToast("Only customer accounts can place shop orders.", "error");
-      return;
-    }
-
-    const quantity = Number(orderForm.quantity) || 0;
+  const addToCart = (item) => {
+    const form = getItemForm(item._id);
+    const quantity = Number(form.quantity) || 0;
     if (quantity < 1) {
       showToast("Quantity must be at least 1.", "error");
       return;
     }
+
+    const existing = cart.find((entry) => entry.shopItemId === item._id && entry.size === form.size && entry.notes === form.notes);
+    if (existing) {
+      setCart((prev) =>
+        prev.map((entry) =>
+          entry === existing
+            ? { ...entry, quantity: entry.quantity + quantity }
+            : entry
+        )
+      );
+    } else {
+      setCart((prev) => [
+        ...prev,
+        {
+          cartId: `${item._id}-${Date.now()}-${Math.floor(Math.random() * 10000)}`,
+          shopItemId: item._id,
+          itemName: item.name,
+          imageUrl: item.imageUrl,
+          quantity,
+          size: form.size,
+          notes: form.notes
+        }
+      ]);
+    }
+
+    setItemForms((prev) => ({ ...prev, [item._id]: defaultItemForm }));
+    showToast("Added to cart.");
+  };
+
+  const removeFromCart = (cartId) => {
+    setCart((prev) => prev.filter((entry) => entry.cartId !== cartId));
+  };
+
+  const checkoutCart = async () => {
+    if (!user) {
+      showToast("Please login to checkout.");
+      navigate("/login");
+      return;
+    }
+    if (user.role !== "customer") {
+      showToast("Only customer accounts can place shop orders.", "error");
+      return;
+    }
+    if (cart.length === 0) {
+      showToast("Your cart is empty.", "error");
+      return;
+    }
+
+    setCheckingOut(true);
     try {
-      await api.post("/orders", {
-        shopItem: shopItemId,
-        quantity,
-        size: orderForm.size,
-        notes: orderForm.notes
-      });
-      showToast("Order placed successfully.");
-      setOpenOrderId("");
-      setOrderForm(defaultOrder);
+      for (const entry of cart) {
+        await api.post("/orders", {
+          shopItem: entry.shopItemId,
+          quantity: entry.quantity,
+          size: entry.size,
+          notes: entry.notes
+        });
+      }
+      setCart([]);
+      showToast("Order request sent. Awaiting admin confirmation.");
     } catch (err) {
-      showToast(err.response?.data?.message || "Failed to place order", "error");
+      showToast(err.response?.data?.message || "Checkout failed", "error");
+    } finally {
+      setCheckingOut(false);
     }
   };
+
+  const cartSummary = useMemo(
+    () => cart.reduce((acc, item) => acc + item.quantity, 0),
+    [cart]
+  );
 
   return (
     <div className="space-y-6">
       <div className="panel p-5">
         <h1 className="text-3xl font-bold">Ready-Made Shop</h1>
-        <p className="mt-1 text-slate-600">Browse items uploaded by the designer and place your order in minutes.</p>
+        <p className="mt-1 text-slate-600">Add items to cart first, then confirm your checkout request.</p>
       </div>
+
+      <section className="panel p-5">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2 className="text-xl font-semibold">Cart ({cartSummary} item{cartSummary === 1 ? "" : "s"})</h2>
+          <button
+            onClick={checkoutCart}
+            disabled={checkingOut || cart.length === 0}
+            className={`btn-primary ${checkingOut || cart.length === 0 ? "cursor-not-allowed opacity-70" : ""}`}
+          >
+            {checkingOut ? "Confirming..." : "Confirm Cart Orders"}
+          </button>
+        </div>
+        <div className="mt-3 space-y-2">
+          {cart.length === 0 && <p className="text-sm text-slate-600">Your cart is empty.</p>}
+          {cart.map((entry) => (
+            <div key={entry.cartId} className="flex items-center gap-3 rounded-xl border border-slate-200 p-3 text-sm">
+              <img src={resolveImageUrl(entry.imageUrl)} alt={entry.itemName} className="h-14 w-14 rounded-lg object-cover" />
+              <div className="flex-1">
+                <p className="font-semibold">{entry.itemName}</p>
+                <p className="text-slate-600">Qty: {entry.quantity} | Size: {entry.size || "-"}</p>
+              </div>
+              <button onClick={() => removeFromCart(entry.cartId)} className="rounded-lg border border-rose-200 px-2 py-1 text-rose-700">Remove</button>
+            </div>
+          ))}
+        </div>
+      </section>
 
       {loading && (
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
@@ -99,17 +172,27 @@ const ShopPage = () => {
                 <span className="badge border-amber-200 bg-amber-50 text-amber-700">${item.price}</span>
               </div>
               <p className="text-sm text-slate-600">{item.description}</p>
-
-                <div className="space-y-3 pt-2">
-                <button onClick={() => onOrderClick(item._id)} className="btn-primary w-full">Order This Item</button>
-                {openOrderId === item._id && (
-                  <div className="space-y-2 rounded-xl border border-amber-200 bg-amber-50/70 p-3">
-                    <input className="field" placeholder="Size (e.g. M, L)" value={orderForm.size} onChange={(e) => setOrderForm((p) => ({ ...p, size: e.target.value }))} />
-                    <input className="field" type="number" min="1" value={orderForm.quantity} onChange={(e) => setOrderForm((p) => ({ ...p, quantity: e.target.value }))} />
-                    <textarea className="field" placeholder="Extra note (optional)" value={orderForm.notes} onChange={(e) => setOrderForm((p) => ({ ...p, notes: e.target.value }))} />
-                    <button onClick={() => placeOrder(item._id)} className="btn-primary w-full">Confirm Order</button>
-                  </div>
-                )}
+              <div className="space-y-2 rounded-xl border border-amber-200 bg-amber-50/70 p-3">
+                <input
+                  className="field"
+                  placeholder="Size (e.g. M, L)"
+                  value={getItemForm(item._id).size}
+                  onChange={(e) => setItemFormValue(item._id, "size", e.target.value)}
+                />
+                <input
+                  className="field"
+                  type="number"
+                  min="1"
+                  value={getItemForm(item._id).quantity}
+                  onChange={(e) => setItemFormValue(item._id, "quantity", e.target.value)}
+                />
+                <textarea
+                  className="field"
+                  placeholder="Extra note (optional)"
+                  value={getItemForm(item._id).notes}
+                  onChange={(e) => setItemFormValue(item._id, "notes", e.target.value)}
+                />
+                <button onClick={() => addToCart(item)} className="btn-primary w-full">Add to Cart</button>
               </div>
             </div>
           </article>
