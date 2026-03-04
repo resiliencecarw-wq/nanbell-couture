@@ -66,7 +66,7 @@ const AboutPage = () => {
                   key={url}
                   src={resolveImageUrl(url)}
                   alt="Founder of Nanbell Couture"
-                  className="h-full min-h-32 w-full rounded-xl object-cover"
+                  className="h-full min-h-32 w-full rounded-xl bg-[#f8f3ee] object-contain"
                 />
               ))}
             </div>
