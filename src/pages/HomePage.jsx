@@ -49,7 +49,7 @@ const HomePage = () => {
         <div className="grid gap-5 md:grid-cols-3">
           {templates.map((item) => (
             <article key={item._id} className="panel card-hover overflow-hidden">
-              <img src={resolveImageUrl(item.imageUrl)} alt={item.name} className="h-64 w-full bg-[#f8f3ee] object-contain" />
+              <img src={resolveImageUrl(item.imageUrl)} alt={item.name} className="img-fit h-64 w-full" />
               <div className="space-y-1 p-4">
                 <h3 className="text-xl font-semibold">{item.name}</h3>
                 <p className="text-sm text-slate-600 line-clamp-2">{item.description}</p>
@@ -67,7 +67,7 @@ const HomePage = () => {
         <div className="grid gap-5 md:grid-cols-3">
           {shopItems.map((item) => (
             <article key={item._id} className="panel card-hover overflow-hidden">
-              <img src={resolveImageUrl(item.imageUrl)} alt={item.name} className="h-64 w-full bg-[#f8f3ee] object-contain" />
+              <img src={resolveImageUrl(item.imageUrl)} alt={item.name} className="img-fit h-64 w-full" />
               <div className="space-y-1 p-4">
                 <h3 className="text-xl font-semibold">{item.name}</h3>
                 <p className="text-sm text-slate-600 line-clamp-2">{item.description}</p>
