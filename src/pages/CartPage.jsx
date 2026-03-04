@@ -120,7 +120,7 @@ const CartPage = () => {
         {cart.map((entry) => (
           <article key={entry.cartId} className="panel p-4">
             <div className="flex flex-col gap-3 md:flex-row">
-              <img src={resolveImageUrl(entry.imageUrl)} alt={entry.itemName} className="h-28 w-full rounded-xl bg-[#f8f3ee] object-contain md:w-36" />
+              <img src={resolveImageUrl(entry.imageUrl)} alt={entry.itemName} className="img-fit h-28 w-full rounded-xl md:w-36" />
               <div className="flex-1 space-y-2">
                 <p className="text-lg font-semibold">{entry.itemName}</p>
                 <div className="grid gap-2 md:grid-cols-3">
