@@ -125,7 +125,7 @@ const AdminAboutContentPage = () => {
                 const marked = imagesToRemove.includes(url);
                 return (
                   <div key={url} className={`relative overflow-hidden rounded-xl border ${marked ? "border-rose-400" : "border-slate-200"}`}>
-                    <img src={resolveImageUrl(url)} alt="Founder" className="h-36 w-full bg-[#f8f3ee] object-contain" />
+                    <img src={resolveImageUrl(url)} alt="Founder" className="img-fit h-36 w-full" />
                     <button
                       type="button"
                       onClick={() => toggleRemoveImage(url)}
