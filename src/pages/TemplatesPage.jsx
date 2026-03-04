@@ -40,7 +40,7 @@ const TemplatesPage = () => {
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
         {templates.map((item) => (
           <article key={item._id} className="panel card-hover overflow-hidden">
-            <img src={resolveImageUrl(item.imageUrl)} alt={item.name} className="h-72 w-full bg-[#f8f3ee] object-contain" />
+            <img src={resolveImageUrl(item.imageUrl)} alt={item.name} className="img-fit h-72 w-full" />
             <div className="space-y-2 p-4">
               <h2 className="text-xl font-semibold">{item.name}</h2>
               <p className="text-sm text-slate-600">{item.description}</p>
