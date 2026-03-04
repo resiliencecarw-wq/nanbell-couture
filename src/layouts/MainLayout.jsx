@@ -111,9 +111,10 @@ const MainLayout = ({ children }) => {
           <div>
             <h4 className="text-lg font-semibold">Contact</h4>
             <div className="mt-2 space-y-1 text-sm text-slate-600">
-              <p>Phone: +233 20 000 0000</p>
-              <p>Email: hello@nanbellcouture.com</p>
-              <p>Address: Accra, Ghana</p>
+              <p>Phone: +233 54 111 4579</p>
+              <p>Email: patiencekwegyina@gmail.com</p>
+              <p>Address: Takoradi, Ghana</p>
+              <p>Delivery: Nationwide across Ghana</p>
             </div>
           </div>
         </div>
