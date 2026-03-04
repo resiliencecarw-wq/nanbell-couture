@@ -37,6 +37,7 @@ const MainLayout = ({ children }) => {
               <NavLink to="/" className={navLinkClass}>Home</NavLink>
               <NavLink to="/templates" className={navLinkClass}>Designs</NavLink>
               <NavLink to="/shop" className={navLinkClass}>Shop</NavLink>
+              {user?.role === "customer" && <NavLink to="/cart" className={navLinkClass}>Cart</NavLink>}
               <NavLink to="/about" className={navLinkClass}>About</NavLink>
               <NavLink to="/contact" className={navLinkClass}>Contact</NavLink>
               {!user && <NavLink to="/login" className={navLinkClass}>Login</NavLink>}
@@ -65,6 +66,7 @@ const MainLayout = ({ children }) => {
             <NavLink to="/" className={mobileNavLinkClass} onClick={closeMenu}>Home</NavLink>
             <NavLink to="/templates" className={mobileNavLinkClass} onClick={closeMenu}>Designs</NavLink>
             <NavLink to="/shop" className={mobileNavLinkClass} onClick={closeMenu}>Shop</NavLink>
+            {user?.role === "customer" && <NavLink to="/cart" className={mobileNavLinkClass} onClick={closeMenu}>Cart</NavLink>}
             <NavLink to="/about" className={mobileNavLinkClass} onClick={closeMenu}>About</NavLink>
             <NavLink to="/contact" className={mobileNavLinkClass} onClick={closeMenu}>Contact</NavLink>
             {!user && <NavLink to="/login" className={mobileNavLinkClass} onClick={closeMenu}>Login</NavLink>}
