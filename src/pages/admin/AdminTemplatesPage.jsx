@@ -99,7 +99,7 @@ const AdminTemplatesPage = () => {
       <section className="grid gap-4 md:grid-cols-2">
         {templates.map((item) => (
           <article key={item._id} className="panel card-hover overflow-hidden">
-            <img src={resolveImageUrl(item.imageUrl)} alt={item.name} className="h-56 w-full bg-[#f8f3ee] object-contain" />
+            <img src={resolveImageUrl(item.imageUrl)} alt={item.name} className="img-fit h-56 w-full" />
             <div className="space-y-2 p-4">
               <div className="flex items-start justify-between gap-3">
                 <h3 className="text-lg font-semibold">{item.name}</h3>
