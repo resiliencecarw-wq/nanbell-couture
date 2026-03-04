@@ -2,24 +2,43 @@ import { useEffect, useState } from "react";
 import api from "../../api/client";
 import { resolveImageUrl } from "../../utils/image";
 import OrderTimeline from "../../components/OrderTimeline";
+import { useToast } from "../../context/ToastContext";
 
 const statusColors = {
+  "Pending Confirmation": "border-amber-200 bg-amber-50 text-amber-700",
   "Not Started": "border-slate-200 bg-slate-100 text-slate-700",
   "In Progress": "border-amber-200 bg-amber-100 text-amber-700",
   "Almost Done": "border-indigo-200 bg-indigo-100 text-indigo-700",
   "Ready for Pickup": "border-emerald-200 bg-emerald-100 text-emerald-700",
+  "Cancelled": "border-rose-200 bg-rose-100 text-rose-700",
   "Transaction Completed": "border-[#0f8b6e] bg-[#dff6ef] text-[#0f8b6e]"
 };
 
 const CustomerDashboardPage = () => {
+  const { showToast } = useToast();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [cancellingId, setCancellingId] = useState("");
 
   useEffect(() => {
     api.get("/orders")
       .then(({ data }) => setOrders(data))
       .finally(() => setLoading(false));
   }, []);
+
+  const cancelOrder = async (orderId) => {
+    setCancellingId(orderId);
+    try {
+      await api.patch(`/orders/${orderId}/cancel`);
+      const { data } = await api.get("/orders");
+      setOrders(data);
+      showToast("Order cancelled.");
+    } catch (error) {
+      showToast(error.response?.data?.message || "Failed to cancel order", "error");
+    } finally {
+      setCancellingId("");
+    }
+  };
 
   return (
     <div className="space-y-5">
@@ -47,6 +66,7 @@ const CustomerDashboardPage = () => {
           const displayStatus = order.transactionCompleted ? "Transaction Completed" : order.status;
           const orderName = order.orderType === "shop" ? order.shopItem?.name : (order.dressType || order.template?.name);
           const orderImage = order.shopItem?.imageUrl || order.template?.imageUrl;
+          const canCancel = !order.transactionCompleted && ["Pending Confirmation", "Not Started"].includes(order.status);
           return (
             <article key={order._id} className="panel p-5">
               <div className="flex flex-col gap-3 md:flex-row md:items-start">
@@ -73,6 +93,15 @@ const CustomerDashboardPage = () => {
                     <p className="mt-2 text-sm text-slate-600">Expected completion: {new Date(order.expectedCompletionDate).toLocaleDateString()}</p>
                   ) : (
                     <p className="mt-2 text-sm text-[#0f8b6e]">Estimated completion date will be shared soon.</p>
+                  )}
+                  {canCancel && (
+                    <button
+                      onClick={() => cancelOrder(order._id)}
+                      disabled={cancellingId === order._id}
+                      className={`mt-3 rounded-xl border border-rose-200 px-3 py-1.5 text-sm font-semibold text-rose-700 ${cancellingId === order._id ? "opacity-70" : ""}`}
+                    >
+                      {cancellingId === order._id ? "Cancelling..." : "Cancel This Order"}
+                    </button>
                   )}
                   {order.notes && <p className="mt-1 text-sm text-slate-500">Note: {order.notes}</p>}
                 </div>
