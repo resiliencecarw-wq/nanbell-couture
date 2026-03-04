@@ -50,7 +50,7 @@ const ContactPage = () => {
               </a>
             </p>
             <p>Email: patiencekwegyina@gmail.com</p>
-            <p>Location: Takoradi, Ghana</p>
+            <p>Location: Takoradi Racecourse, Ghana</p>
             <p>Delivery: Available to every part of Ghana</p>
             <p>Hours: Mon - Sat, 9:00 AM - 6:00 PM</p>
           </div>
