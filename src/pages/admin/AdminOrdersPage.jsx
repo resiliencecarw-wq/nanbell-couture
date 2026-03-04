@@ -5,6 +5,7 @@ import { resolveImageUrl } from "../../utils/image";
 import OrderTimeline from "../../components/OrderTimeline";
 
 const STATUS_OPTIONS = ["Not Started", "In Progress", "Almost Done", "Ready for Pickup"];
+const FILTER_STATUS_OPTIONS = ["Pending Confirmation", ...STATUS_OPTIONS, "Cancelled"];
 
 const AdminOrdersPage = () => {
   const { showToast } = useToast();
@@ -72,6 +73,16 @@ const AdminOrdersPage = () => {
     }
   };
 
+  const confirmOrder = async (orderId) => {
+    try {
+      await api.patch(`/orders/${orderId}/confirm`);
+      showToast("Order confirmed. You can now update status.");
+      await loadOrders();
+    } catch (_e) {
+      showToast("Failed to confirm order.", "error");
+    }
+  };
+
   const completeTransaction = async (orderId) => {
     try {
       await api.patch(`/orders/${orderId}/complete-transaction`);
@@ -84,13 +95,15 @@ const AdminOrdersPage = () => {
 
   const filteredOrders = useMemo(() => {
     let next = orders;
-    if (statusFilter !== "All") next = next.filter((o) => o.status === statusFilter);
+    if (statusFilter !== "All") next = next.filter((o) => (statusFilter === "Cancelled" ? o.status === "Cancelled" : o.status === statusFilter));
     if (typeFilter !== "All") next = next.filter((o) => o.orderType === typeFilter);
     return next;
   }, [orders, statusFilter, typeFilter]);
 
-  const activeOrders = filteredOrders.filter((o) => !o.transactionCompleted && o.status !== "Ready for Pickup");
+  const pendingConfirmationOrders = filteredOrders.filter((o) => !o.transactionCompleted && o.adminConfirmed === false && o.status === "Pending Confirmation");
+  const activeOrders = filteredOrders.filter((o) => !o.transactionCompleted && o.adminConfirmed !== false && !["Ready for Pickup", "Cancelled"].includes(o.status));
   const readyForPickupOrders = filteredOrders.filter((o) => !o.transactionCompleted && o.status === "Ready for Pickup");
+  const cancelledOrders = filteredOrders.filter((o) => o.status === "Cancelled");
   const completedOrders = filteredOrders.filter((o) => o.transactionCompleted);
 
   const renderOrderCard = (order, showCompleteButton = false, compact = false) => {
@@ -114,6 +127,11 @@ const AdminOrdersPage = () => {
 
             {compact ? (
               <p className="text-sm text-slate-600">Completed on: {order.completedAt ? new Date(order.completedAt).toLocaleDateString() : "-"}</p>
+            ) : order.adminConfirmed === false ? (
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <p className="text-sm text-amber-700">Awaiting admin confirmation before status updates.</p>
+                <button onClick={() => confirmOrder(order._id)} className="btn-primary">Confirm Order</button>
+              </div>
             ) : (
               <div className="mt-3 grid gap-2 text-sm md:flex md:flex-wrap md:items-center">
                 <select
@@ -200,7 +218,7 @@ const AdminOrdersPage = () => {
         <label className="text-sm font-semibold">Filter by status:</label>
         <select className="field w-full md:max-w-xs" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
           <option>All</option>
-          {STATUS_OPTIONS.map((s) => <option key={s}>{s}</option>)}
+          {FILTER_STATUS_OPTIONS.map((s) => <option key={s}>{s}</option>)}
         </select>
         <label className="text-sm font-semibold">Type:</label>
         <select className="field w-full md:max-w-xs" value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
@@ -209,6 +227,12 @@ const AdminOrdersPage = () => {
           <option value="shop">Shop</option>
         </select>
       </div>
+
+      <section className="space-y-3">
+        <h2 className="text-2xl font-bold text-[#b67600]">Pending Confirmation</h2>
+        {!loading && pendingConfirmationOrders.length === 0 && <div className="panel p-4 text-sm text-slate-600">No pending confirmations.</div>}
+        {pendingConfirmationOrders.map((order) => renderOrderCard(order))}
+      </section>
 
       <section className="space-y-3">
         <h2 className="text-2xl font-bold">Active Orders</h2>
@@ -227,6 +251,12 @@ const AdminOrdersPage = () => {
         <h2 className="text-2xl font-bold text-[#0f8b6e]">Transaction Completed</h2>
         {!loading && completedOrders.length === 0 && <div className="panel p-4 text-sm text-slate-600">No completed transactions yet.</div>}
         {completedOrders.map((order) => renderOrderCard(order, false, true))}
+      </section>
+
+      <section className="space-y-3">
+        <h2 className="text-2xl font-bold text-rose-700">Cancelled Orders</h2>
+        {!loading && cancelledOrders.length === 0 && <div className="panel p-4 text-sm text-slate-600">No cancelled orders.</div>}
+        {cancelledOrders.map((order) => renderOrderCard(order, false, true))}
       </section>
     </div>
   );
