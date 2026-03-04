@@ -16,6 +16,7 @@ import AdminTemplatesPage from "./pages/admin/AdminTemplatesPage";
 import AdminShopItemsPage from "./pages/admin/AdminShopItemsPage";
 import AdminCustomersPage from "./pages/admin/AdminCustomersPage";
 import AdminOrdersPage from "./pages/admin/AdminOrdersPage";
+import AdminAboutContentPage from "./pages/admin/AdminAboutContentPage";
 
 const App = () => {
   return (
@@ -76,6 +77,14 @@ const App = () => {
             element={
               <ProtectedRoute role="admin">
                 <AdminOrdersPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/about-content"
+            element={
+              <ProtectedRoute role="admin">
+                <AdminAboutContentPage />
               </ProtectedRoute>
             }
           />
