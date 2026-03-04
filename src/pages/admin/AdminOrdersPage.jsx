@@ -115,7 +115,7 @@ const AdminOrdersPage = () => {
           <img
             src={orderImage ? resolveImageUrl(orderImage) : "https://via.placeholder.com/160x130?text=No+Image"}
             alt={orderName || "Order"}
-            className={`${compact ? "h-28 md:w-36" : "h-32 md:w-40"} w-full rounded-xl bg-[#f8f3ee] object-contain`}
+            className={`img-fit ${compact ? "h-28 md:w-36" : "h-32 md:w-40"} w-full rounded-xl`}
           />
           <div className="flex-1">
             <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
