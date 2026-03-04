@@ -115,7 +115,7 @@ const AdminShopItemsPage = () => {
       <section className="grid gap-4 md:grid-cols-2">
         {items.map((item) => (
           <article key={item._id} className="panel card-hover overflow-hidden">
-            <img src={resolveImageUrl(item.imageUrl)} alt={item.name} className="h-56 w-full object-cover" />
+            <img src={resolveImageUrl(item.imageUrl)} alt={item.name} className="h-56 w-full bg-[#f8f3ee] object-contain" />
             <div className="space-y-2 p-4">
               <div className="flex items-start justify-between gap-3">
                 <div>
