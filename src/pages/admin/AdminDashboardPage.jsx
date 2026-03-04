@@ -54,7 +54,7 @@ const AdminDashboardPage = () => {
             const statusLabel = order.transactionCompleted ? "Transaction Completed" : order.status;
             return (
               <div key={order._id} className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 text-sm">
-                <img src={orderImage ? resolveImageUrl(orderImage) : "https://via.placeholder.com/48x48?text=-"} alt={orderName || "Order"} className="h-12 w-12 rounded-lg bg-[#f8f3ee] object-contain" />
+                <img src={orderImage ? resolveImageUrl(orderImage) : "https://via.placeholder.com/48x48?text=-"} alt={orderName || "Order"} className="img-fit h-12 w-12 rounded-lg" />
                 <span className="flex-1">{order.orderCode} - {order.customer?.fullName} - {orderName}</span>
                 <span className="badge border-slate-200 bg-slate-100 text-slate-700">{statusLabel}</span>
               </div>
