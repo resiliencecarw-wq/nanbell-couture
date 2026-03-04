@@ -24,11 +24,17 @@ const MainLayout = ({ children }) => {
           <div className="flex items-center justify-between gap-3">
             <Link
               to="/"
-              className="inline-flex items-center gap-2 rounded-2xl border border-[#f1d4bf] bg-white px-3 py-2 text-xl font-bold text-[#b8322f] shadow-sm transition hover:shadow"
+              className="inline-flex items-center gap-3 rounded-2xl border border-[#f1d4bf] bg-white px-3.5 py-2 text-xl font-bold text-[#b8322f] shadow-sm transition hover:shadow"
             >
-              <span className="grid h-8 w-8 place-content-center rounded-full bg-gradient-to-br from-[#b8322f] to-[#d17353] text-xs font-bold text-white">NC</span>
+              <span className="h-12 w-12 overflow-hidden rounded-full border border-[#f1d4bf] bg-white">
+                <img
+                  src="https://res.cloudinary.com/dseenib62/image/upload/v1772625961/logo_ejndhc.jpg"
+                  alt="Nanbell Couture logo"
+                  className="h-full w-full object-cover"
+                />
+              </span>
               <span className="leading-none">
-                <span className="block text-[1rem]">Nanbell</span>
+                <span className="block text-[1.05rem]">Nanbell</span>
                 <span className="block text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-[#8a4a3b]">Couture</span>
               </span>
             </Link>
