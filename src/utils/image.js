@@ -3,8 +3,9 @@ const apiBase = apiUrl.replace(/\/api\/?$/, "");
 
 export const resolveImageUrl = (imageUrl) => {
   if (!imageUrl) return "";
-  if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
-    return imageUrl;
+  const normalized = String(imageUrl).replace(/\\/g, "/").trim();
+  if (normalized.startsWith("http://") || normalized.startsWith("https://")) {
+    return normalized;
   }
-  return `${apiBase}${imageUrl.startsWith("/") ? "" : "/"}${imageUrl}`;
+  return `${apiBase}${normalized.startsWith("/") ? "" : "/"}${normalized}`;
 };
