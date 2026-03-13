@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import api from "../../api/client";
 import { useToast } from "../../context/ToastContext";
 import { resolveImageUrl } from "../../utils/image";
@@ -13,7 +13,7 @@ const AdminTemplatesPage = () => {
   const [editingId, setEditingId] = useState("");
   const [error, setError] = useState("");
 
-  const loadTemplates = async () => {
+  const loadTemplates = useCallback(async () => {
     try {
       const { data } = await api.get("/templates");
       setTemplates(data);
@@ -22,11 +22,11 @@ const AdminTemplatesPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [showToast]);
 
   useEffect(() => {
     loadTemplates();
-  }, []);
+  }, [loadTemplates]);
 
   const onChange = (e) => setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
