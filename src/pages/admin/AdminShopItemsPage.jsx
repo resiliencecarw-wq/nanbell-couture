@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import api from "../../api/client";
 import { useToast } from "../../context/ToastContext";
 import { resolveImageUrl } from "../../utils/image";
@@ -14,7 +14,7 @@ const AdminShopItemsPage = () => {
   const [editingId, setEditingId] = useState("");
   const [error, setError] = useState("");
 
-  const loadItems = async () => {
+  const loadItems = useCallback(async () => {
     try {
       const { data } = await api.get("/shop-items");
       setItems(data);
@@ -23,11 +23,11 @@ const AdminShopItemsPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [showToast]);
 
   useEffect(() => {
     loadItems();
-  }, []);
+  }, [loadItems]);
 
   const onChange = (e) => setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
