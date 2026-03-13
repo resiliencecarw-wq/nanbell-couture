@@ -2,7 +2,8 @@ import { useEffect, useState, useCallback } from "react";
 import api from "../../api/client";
 import { useToast } from "../../context/ToastContext";
 import { resolveImageUrl } from "../../utils/image";
-import { formatPrice } from "../../utils/format";
+
+const formatPrice = (price) => `₵${Number(price).toFixed(2)}`;
 
 const emptyForm = { name: "", description: "", imageUrl: "", price: "", available: true, imageFile: null };
 
