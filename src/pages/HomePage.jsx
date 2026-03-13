@@ -2,7 +2,8 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import api from "../api/client";
 import { resolveImageUrl } from "../utils/image";
-import { formatPrice } from "../utils/format";
+
+const formatPrice = (price) => `₵${Number(price).toFixed(2)}`;
 
 const HomePage = () => {
   const heroImage = "https://designer-rouge-ten.vercel.app/hero.png";
