@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import api from "../../api/client";
 import { useToast } from "../../context/ToastContext";
 import { resolveImageUrl } from "../../utils/image";
@@ -17,7 +17,7 @@ const AdminOrdersPage = () => {
   const [typeFilter, setTypeFilter] = useState("All");
   const [form, setForm] = useState({ customer: "", dressType: "", expectedCompletionDate: "", showEstimatedDate: true, notes: "", size: "", quantity: 1 });
 
-  const loadOrders = async () => {
+  const loadOrders = useCallback(async () => {
     try {
       const { data } = await api.get("/orders");
       setOrders(data);
@@ -26,9 +26,9 @@ const AdminOrdersPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [showToast]);
 
-  const searchCustomers = async (query = "") => {
+  const searchCustomers = useCallback(async (query = "") => {
     try {
       const { data } = await api.get(`/customers?search=${encodeURIComponent(query)}`);
       setCustomers(data);
@@ -36,12 +36,12 @@ const AdminOrdersPage = () => {
     } catch (_e) {
       showToast("Failed to search customers.", "error");
     }
-  };
+  }, [showToast]);
 
   useEffect(() => {
     loadOrders();
     searchCustomers("");
-  }, []);
+  }, [loadOrders, searchCustomers]);
 
   const createCustomOrder = async (e) => {
     e.preventDefault();
