@@ -193,7 +193,7 @@ const ShopPage = () => {
               
               {/* Price Badge */}
               <div className="absolute left-3 top-3 rounded-full bg-white/90 px-4 py-1.5 text-sm font-bold text-[#b8322f] shadow-md backdrop-blur-sm">
-                ${item.price}
+                GH₵{item.price}
               </div>
               
               {/* Wishlist Button */}
