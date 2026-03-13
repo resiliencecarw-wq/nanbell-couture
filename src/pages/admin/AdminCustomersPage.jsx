@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import api from "../../api/client";
 import { useToast } from "../../context/ToastContext";
 
@@ -10,7 +10,7 @@ const AdminCustomersPage = () => {
   const [editId, setEditId] = useState("");
   const [form, setForm] = useState({ fullName: "", phone: "", email: "" });
 
-  const loadCustomers = async (query = "") => {
+  const loadCustomers = useCallback(async (query = "") => {
     try {
       const { data } = await api.get(`/customers?search=${encodeURIComponent(query)}`);
       setCustomers(data);
@@ -19,11 +19,11 @@ const AdminCustomersPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [showToast]);
 
   useEffect(() => {
     loadCustomers();
-  }, []);
+  }, [loadCustomers]);
 
   const startEdit = (customer) => {
     setEditId(customer._id);
