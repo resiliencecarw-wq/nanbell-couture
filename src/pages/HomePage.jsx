@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import api from "../api/client";
 import { resolveImageUrl } from "../utils/image";
+import { formatPrice } from "../utils/format";
 
 const HomePage = () => {
   const heroImage = "https://designer-rouge-ten.vercel.app/hero.png";
@@ -171,7 +172,7 @@ const HomePage = () => {
                     className="img-fit max-h-full max-w-full rounded-lg" 
                   />
                   <div className="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-sm font-bold text-[#b8322f] shadow-md backdrop-blur-sm">
-                    GH₵{item.price}
+                    {formatPrice(item.price)}
                   </div>
                 </div>
                 <div className="space-y-2 p-5">
