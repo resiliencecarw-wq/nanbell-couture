@@ -4,6 +4,7 @@ import api from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 import { resolveImageUrl } from "../utils/image";
+import { formatPrice } from "../utils/format";
 
 const CART_KEY = "nanbell_cart";
 const WISHLIST_KEY = "nanbell_wishlist";
@@ -193,7 +194,7 @@ const ShopPage = () => {
               
               {/* Price Badge */}
               <div className="absolute left-3 top-3 rounded-full bg-white/90 px-4 py-1.5 text-sm font-bold text-[#b8322f] shadow-md backdrop-blur-sm">
-                GH₵{item.price}
+                {formatPrice(item.price)}
               </div>
               
               {/* Wishlist Button */}
