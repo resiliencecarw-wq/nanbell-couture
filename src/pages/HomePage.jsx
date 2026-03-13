@@ -171,7 +171,7 @@ const HomePage = () => {
                     className="img-fit max-h-full max-w-full rounded-lg" 
                   />
                   <div className="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-sm font-bold text-[#b8322f] shadow-md backdrop-blur-sm">
-                    ${item.price}
+                    GH₵{item.price}
                   </div>
                 </div>
                 <div className="space-y-2 p-5">
