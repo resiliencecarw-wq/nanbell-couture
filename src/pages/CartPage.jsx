@@ -4,6 +4,7 @@ import api from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 import { resolveImageUrl } from "../utils/image";
+import { formatPrice } from "../utils/format";
 
 const CART_KEY = "nanbell_cart";
 const SAVE_FOR_LATER_KEY = "nanbell_save_for_later";
@@ -192,7 +193,7 @@ const CartPage = () => {
               <p className="font-semibold">Items in cart: {totalItems}</p>
               {subtotal > 0 && (
                 <span className="text-lg font-bold text-[#b8322f]">
-                  Subtotal: GH₵{subtotal.toFixed(2)}
+                  Subtotal: {formatPrice(subtotal)}
                 </span>
               )}
             </div>
@@ -234,7 +235,7 @@ const CartPage = () => {
                   <div className="flex items-start justify-between gap-2">
                     <p className="text-lg font-semibold">{entry.itemName}</p>
                     {entry.price && (
-                      <span className="font-bold text-[#b8322f]">GH₵{(Number(entry.price) * Number(entry.quantity)).toFixed(2)}</span>
+                      <span className="font-bold text-[#b8322f]">{formatPrice(Number(entry.price) * Number(entry.quantity))}</span>
                     )}
                   </div>
                   
@@ -305,7 +306,7 @@ const CartPage = () => {
           <div className="panel p-4">
             <div className="subtotal-row">
               <span>Subtotal ({totalItems} items)</span>
-              <span className="text-[#b8322f]">GH₵{subtotal.toFixed(2)}</span>
+              <span className="text-[#b8322f]">{formatPrice(subtotal)}</span>
             </div>
           </div>
         </div>
@@ -325,7 +326,7 @@ const CartPage = () => {
                 />
                 <div className="flex-1 space-y-2">
                   <p className="font-medium text-sm">{item.itemName}</p>
-                  {item.price && <p className="font-bold text-[#b8322f]">GH₵{item.price}</p>}
+                  {item.price && <p className="font-bold text-[#b8322f]">{formatPrice(item.price)}</p>}
                   <button 
                     onClick={() => handleMoveToCart(item)}
                     className="text-sm font-medium text-[#b8322f] hover:underline"
