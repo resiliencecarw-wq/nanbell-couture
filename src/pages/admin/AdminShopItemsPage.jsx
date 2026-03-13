@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../../api/client";
 import { useToast } from "../../context/ToastContext";
 import { resolveImageUrl } from "../../utils/image";
+import { formatPrice } from "../../utils/format";
 
 const emptyForm = { name: "", description: "", imageUrl: "", price: "", available: true, imageFile: null };
 
@@ -120,7 +121,7 @@ const AdminShopItemsPage = () => {
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <h3 className="text-lg font-semibold">{item.name}</h3>
-                  <p className="text-sm text-slate-600">${item.price}</p>
+                  <p className="text-sm text-slate-600">{formatPrice(item.price)}</p>
                 </div>
                 <span className={`badge ${item.available ? "border-emerald-200 bg-emerald-100 text-emerald-700" : "border-slate-200 bg-slate-100 text-slate-700"}`}>{item.available ? "Available" : "Hidden"}</span>
               </div>
