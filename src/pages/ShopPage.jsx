@@ -4,7 +4,8 @@ import api from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 import { resolveImageUrl } from "../utils/image";
-import { formatPrice } from "../utils/format";
+
+const formatPrice = (price) => `₵${Number(price).toFixed(2)}`;
 
 const CART_KEY = "nanbell_cart";
 const WISHLIST_KEY = "nanbell_wishlist";
